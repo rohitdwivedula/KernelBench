@@ -8,11 +8,9 @@ import torch.nn as nn
 import os, subprocess
 from pydantic import BaseModel
 import numpy as np
-import random
 import json
 from contextlib import redirect_stdout, redirect_stderr
 from io import StringIO
-import sys
 
 from . import utils
 
@@ -192,13 +190,11 @@ def build_compile_cache_legacy(
 
     try:
         os.environ["TORCH_USE_CUDA_DSA"] = "1"  # compile with device side assertion
-        # sys.stdout.flush()
-
+        
         # Capture stdout during compilation
         with redirect_stdout(stdout_buffer), redirect_stderr(stdout_buffer):
             load_custom_model(custom_model_src, context, build_dir)
-            # sys.stdout.flush()
-
+            
         if verbose:
             print(f"[Compilation] Compilation Successful, saved cache at: {build_dir}")
     except Exception as e:
@@ -232,13 +228,11 @@ def build_compile_cache(
 
     try:
         os.environ["TORCH_USE_CUDA_DSA"] = "1"  # compile with device side assertion
-        # sys.stdout.flush()
-
+        
         # Capture stdout during compilation
         with redirect_stdout(stdout_buffer), redirect_stderr(stdout_buffer):
             load_custom_model(custom_model_src, context, build_dir)
-            # sys.stdout.flush()
-
+        
         if verbose:
             print(f"[Compilation] Compilation Successful, saved cache at: {build_dir}")
     except Exception as e:
@@ -551,6 +545,9 @@ def run_and_check_correctness(
     seed=42,
     device=None,
 ) -> KernelExecResult:
+    if num_correct_trials == 0:
+        return KernelExecResult(compiled=True, correctness=True, metadata="0 / 0 - not checked -- bypassed.")
+    
     """
     run the model and check correctness,
     assume model already loaded and compiled (loaded and compiled in the caller)

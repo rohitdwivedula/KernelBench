@@ -158,6 +158,9 @@ def query_server(
             
         case "openai":
             client = OpenAI(api_key=OPENAI_KEY)
+            if model_name in ["o3", "o1"]:
+                is_reasoning_model = True
+                reasoning_effort = "medium"
             model = model_name
         case _:
             raise NotImplementedError

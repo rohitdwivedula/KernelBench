@@ -71,8 +71,9 @@ KernelBench/
 
 ## 🔧 Set up
 ```
-conda create --name kernel-bench python=3.10
-conda activate kernel-bench
+conda create -n torch124 cuda -y && conda activate torch124
+conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvidia
+conda install -c nvidia cuda-nvcc=12.4 cuda-cudart-dev=12.4
 pip install -r requirements.txt
 pip install -e . 
 ```
@@ -89,7 +90,7 @@ It is easier to get started with a single problem. This will fetch the problem, 
 ```
 # for example, run level 2 problem 40 from huggingface
 
-python3 scripts/generate_and_eval_single_sample.py dataset_src="huggingface" level=2 problem_id=40
+python3 scripts/generate_and_eval_single_sample.py dataset_src="huggingface" level=2 problem_id=40 server_type=openai model_name=gpt-4o
 
 # dataset_src could be "local" or "huggingface"
 # add .verbose_logging for more visbility

@@ -39,7 +39,7 @@ class EvalConfig(Config):
         self.eval_mode = "local"
         # Construct this from mapping from architecture name to torch cuda arch list in the future
         # you can either specify SM version or just use the name
-        self.gpu_arch = ["Ada"]
+        self.gpu_arch = ["Ampere"]
 
         # Inference config
         self.server_type = "deepseek"
@@ -146,6 +146,7 @@ def main(config: EvalConfig):
     # 3. Evaluate Kernel
     # NOTE: no need to wrap around process here as only a single sample
     # see batch eval for examples of process isolation
+    
     kernel_exec_result = eval_kernel_against_ref(
         ref_arch_src, custom_cuda, verbose=config.verbose, measure_performance=True, num_correct_trials=5, num_perf_trials=100
     )
