@@ -168,16 +168,20 @@ def record_baseline_times(use_torch_compile: bool = False,
         json.dump(json_results, f)
     return json_results
 
+def get_particular_program(level_num: int, problem_id: int):
+    PROBLEM_DIR = os.path.join(KERNEL_BENCH_PATH, "level" + str(level_num))
+    dataset = construct_problem_dataset_from_problem_dir(PROBLEM_DIR)
+    ref_arch_path, ref_arch_name, ref_arch_src = fetch_ref_arch_from_dataset(dataset, problem_id)
+    return (ref_arch_path, ref_arch_name, ref_arch_src)
+
+
 def test_measure_particular_program(level_num: int, problem_id: int):
     """
     Test measure_program_time on a particular program
     """
     device = torch.device("cuda:0")
+    ref_arch_path, ref_arch_name, ref_arch_src = get_particular_program(level_num, problem_id)
 
-    PROBLEM_DIR = os.path.join(KERNEL_BENCH_PATH, "level" + str(level_num))
-    dataset = construct_problem_dataset_from_problem_dir(PROBLEM_DIR)
-
-    ref_arch_path, ref_arch_name, ref_arch_src = fetch_ref_arch_from_dataset(dataset, problem_id)
 
     exec_stats = measure_program_time(
         ref_arch_name=ref_arch_name,
